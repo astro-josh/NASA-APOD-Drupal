@@ -1,0 +1,87 @@
+<?php
+
+/**
+* @file
+* Adds a block showing NASA's Astronomy Photo of the Day
+* created by Joshua Alexander
+*/
+
+/**
+ * Implements hook_block_info().
+ */
+function apod_block_info() {
+	$blocks['apod'] = array(
+		// The name that will appear in the block list.
+		'info' => t('Astronomy Picture of the Day'),
+		// Default setting.
+		'cache' => DRUPAL_CACHE_PER_ROLE,
+	);
+	return $blocks;
+}
+
+/**
+ * Custom content function.
+ *
+ * @return
+ *   A result of the picture of the day API call.
+ */
+function apod_contents(){
+		ini_set("allow_url_fopen", 1);
+		$url = "https://api.nasa.gov/planetary/apod?api_key=jKhumaiOBt8Q63w2Rgt1kMDikvyJGkE0PfGvRMyv";
+
+		try {
+    		$json = file_get_contents($url);
+			$data = json_decode($json, true);
+		} catch (Exception $ex) {
+    		echo 'Failed to reach NASA APOD API: ' . $ex;
+		}
+
+		return $data;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Prepares the contents of the block.
+ */
+function apod_block_view($delta = '') {
+	switch ($delta) {
+		case 'apod':
+			$block['subject'] = t('Astronomy Photo of the Day');
+			if (user_access('access content')) {
+				$markup = '';
+				// Use contents function to make API call and recieve json.
+				$result = apod_contents();
+
+				if (is_array($result)) {
+					$markup = theme('html_tag', array(
+						'element' => array(
+							'#tag' => 'div',
+							'#attributes' => array(
+								'class' => 'apod',),
+							'#value' => theme('html_tag', array(
+								'element' => array(
+									'#tag' => 'h2',
+									'#attributes' => array(
+										'class' => 'apod-title',),
+									'#value' => $result['title']))) . 
+								theme('image', array(
+									'path' => $result['hdurl'],
+									'alt' => $result['title'],
+									'title' => $result['title'],
+									'width' => '80%',
+									'height' => '80%',
+									'attributes' => array('class' => 'apod-img'))) . 
+								'<p>Image Credits: ' . $result['copyright'] . '<br>Date: ' . 
+								$result['date'] . '</p><p>' . $result['explanation'] . '</p>')));
+				} else {
+					$markup = '<p>Failed to reach NASA APOD API.</p>';
+				}
+				$block['content'] = $markup;
+			}
+		return $block;
+	}
+
+}
+
+?>

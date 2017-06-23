@@ -1,0 +1,6 @@
+name = NASA Astronomy Photo of the Day
+description = "Adds a block for viewing the NASA Astronomy Photo of the Day using the NASA API."
+package = Fields
+version = 1.0.0
+core = 7.x
+files[] = apod.module
