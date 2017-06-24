@@ -25,7 +25,7 @@ function apod_block_info() {
  * @return
  *   A result of the picture of the day API call.
  */
-function apod_contents(){
+function apod_contents() {
 		ini_set("allow_url_fopen", 1);
 		$url = "https://api.nasa.gov/planetary/apod?api_key=jKhumaiOBt8Q63w2Rgt1kMDikvyJGkE0PfGvRMyv";
 
@@ -35,7 +35,6 @@ function apod_contents(){
 		} catch (Exception $ex) {
     		echo 'Failed to reach NASA APOD API: ' . $ex;
 		}
-
 		return $data;
 }
 
@@ -54,26 +53,43 @@ function apod_block_view($delta = '') {
 				$result = apod_contents();
 
 				if (is_array($result)) {
-					$markup = theme('html_tag', array(
-						'element' => array(
-							'#tag' => 'div',
-							'#attributes' => array(
-								'class' => 'apod',),
-							'#value' => theme('html_tag', array(
+					switch ($result['media_type']) {
+						case 'image':
+							$markup = theme('html_tag', array(
 								'element' => array(
-									'#tag' => 'h2',
+									'#tag' => 'div',
 									'#attributes' => array(
-										'class' => 'apod-title',),
-									'#value' => $result['title']))) . 
-								theme('image', array(
-									'path' => $result['hdurl'],
-									'alt' => $result['title'],
-									'title' => $result['title'],
-									'width' => '80%',
-									'height' => '80%',
-									'attributes' => array('class' => 'apod-img'))) . 
-								'<p>Image Credits: ' . $result['copyright'] . '<br>Date: ' . 
-								$result['date'] . '</p><p>' . $result['explanation'] . '</p>')));
+										'class' => 'apod',),
+									'#value' => theme('html_tag', array(
+										'element' => array(
+											'#tag' => 'h2',
+											'#attributes' => array(
+												'class' => 'apod-title',),
+											'#value' => $result['title']))) . 
+										theme('image', array(
+											'path' => $result['hdurl'],
+											'alt' => $result['title'],
+											'title' => $result['title'],
+											'width' => '80%',
+											'height' => '80%',
+											'attributes' => array('class' => 'apod-img'))) . 
+										'<p>Image Credit: ' . $result['copyright'] . '<br>Date: ' . 
+										$result['date'] . '</p><p>' . $result['explanation'] . '</p>')));
+							break;
+						case 'video':
+							module_load_include('module', 'Iframe');
+							$markup = theme('html_tag', array(
+								'element' => array(
+									'#tag' => 'div',
+									'#attributes' => array(
+										'class' => 'apod',),
+									'#value' =>
+										iframe_iframe($result['title'], $result['url'],
+											array('title' => $result['title'], 'width' => '80%', 'height' => '300px')) .
+										'<p>Video Credit: ' . $result['copyright'] . '<br>Date: ' . 
+										$result['date'] . '</p><p>' . $result['explanation'] . '</p>')));
+							break;
+					}	
 				} else {
 					$markup = '<p>Failed to reach NASA APOD API.</p>';
 				}
