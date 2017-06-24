@@ -1,5 +1,5 @@
 name = NASA Astronomy Photo of the Day
-description = "Adds a block for viewing the NASA Astronomy Photo of the Day using the NASA API."
+description = "Adds a block for viewing the NASA Astronomy Photo of the Day using the NASA API, by Joshua Alexander GSFC:720"
 package = Blocks
 version = 1.1.1
 core = 7.x
