@@ -43,13 +43,13 @@ function apod_menu() {
  * @see apod_menu()
  */
 function apod_form($form, &$form_state) {
-  $form['apod_api'] = array(
+  $form['apod_api_key'] = array(
     '#type' => 'textfield',
     '#title' => t('Enter API Key'),
     '#default_value' => variable_get('apod_api_key', 'NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo'),
     '#size' => 60,
     '#maxlength' => 60,
-    '#description' => t('The NASA API key. If one is needed, you can request one ') .
+    '#description' => t('The NASA API key. CLEAR CACHE AFTER CHANGING! If one is needed, you can request one ') .
 		l(t('here.'), 'https://api.nasa.gov/index.html#apply-for-an-api-key',
 		array('attributes' => array('title' => 'Get NASA API key link'))),
     '#required' => TRUE,
@@ -73,7 +73,7 @@ function apod_contents() {
     		$json = file_get_contents($url);
 			$data = json_decode($json, true);
 		} catch (Exception $ex) {
-    		echo 'Failed to reach NASA APOD API: ' . $ex;
+    		echo 'Failed to reach NASA APOD API: ' . $ex . $api_key;
 		}
 		return $data;
 }
@@ -113,7 +113,7 @@ function apod_block_view($delta = '') {
 											'width' => '80%',
 											'height' => '80%',
 											'attributes' => array('class' => 'apod-img'))) . 
-										'<p>Image Credit: ' . $result['copyright'] . '<br>Date: ' . 
+										'<p>Image Credit: ' . $result['copyright'] . '<br>Date: ' .
 										$result['date'] . '</p><p>' . $result['explanation'] . '</p>')));
 							break;
 						case 'video':
@@ -131,7 +131,7 @@ function apod_block_view($delta = '') {
 							break;
 					}	
 				} else {
-					$markup = '<p>Failed to reach NASA APOD API.</p>';
+					$markup = '<p>Failed to reach NASA APOD API. ' .'<br>Check API Key!</p>';
 				}
 				$block['content'] = $markup;
 			}
