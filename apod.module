@@ -20,6 +20,45 @@ function apod_block_info() {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function apod_menu() {
+  $items = array();
+
+  $items['admin/config/modules/apod'] = array(
+    'title' => 'Astronomy Picture of the Day',
+    'description' => 'Configuration for APOD module',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('apod_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback: APOD settings
+ *
+ * @see apod_menu()
+ */
+function apod_form($form, &$form_state) {
+  $form['apod_api'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Enter API Key'),
+    '#default_value' => variable_get('apod_api_key', 'NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo'),
+    '#size' => 60,
+    '#maxlength' => 60,
+    '#description' => t('The NASA API key. If one is needed, you can request one ') .
+		l(t('here.'), 'https://api.nasa.gov/index.html#apply-for-an-api-key',
+		array('attributes' => array('title' => 'Get NASA API key link'))),
+    '#required' => TRUE,
+  );
+
+  return system_settings_form($form);
+}
+
+/**
  * Custom content function.
  *
  * @return
@@ -27,7 +66,8 @@ function apod_block_info() {
  */
 function apod_contents() {
 		ini_set("allow_url_fopen", 1);
-		$url = "https://api.nasa.gov/planetary/apod?api_key=jKhumaiOBt8Q63w2Rgt1kMDikvyJGkE0PfGvRMyv";
+		$api_key = variable_get('apod_api_key', 'NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo');
+		$url = "https://api.nasa.gov/planetary/apod?api_key=" . $api_key;
 
 		try {
     		$json = file_get_contents($url);
