@@ -113,7 +113,7 @@ function apod_block_view($delta = '') {
 											'width' => '80%',
 											'height' => '80%',
 											'attributes' => array('class' => 'apod-img'))) . 
-										'<p>Image Credit: ' . $result['copyright'] . '<br>Date: ' .
+										'<p>Image Credit: ' . (isset($result['copyright']) ? $result['copyright'] : 'Other') . '<br>Date: ' .
 										$result['date'] . '</p><p>' . $result['explanation'] . '</p>')));
 							break;
 						case 'video':
