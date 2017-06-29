@@ -25,7 +25,7 @@ function apod_block_info() {
 function apod_menu() {
   $items = array();
 
-  $items['admin/config/modules/apod'] = array(
+  $items['admin/config/apod'] = array(
     'title' => 'Astronomy Picture of the Day',
     'description' => 'Configuration for APOD module',
     'page callback' => 'drupal_get_form',

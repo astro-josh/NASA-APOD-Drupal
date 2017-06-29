@@ -8,4 +8,4 @@ dependencies[] = drupal:system (>= 7.40)
 files[] = apod.module
 
 ; NEW LINE
-configure = admin/config/modules/apod
+configure = admin/config/apod
