@@ -1,6 +1,6 @@
 name = NASA Astronomy Photo of the Day
 description = "Adds a block for viewing the NASA Astronomy Photo of the Day using the NASA API, by Joshua Alexander GSFC:720"
-package = Blocks
+package = NASA
 version = 1.1.2
 core = 7.x
 dependencies[] = drupal.org/project/iframe:iframe
